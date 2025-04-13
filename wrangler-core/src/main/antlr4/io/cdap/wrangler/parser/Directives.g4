@@ -64,6 +64,8 @@ directive
     | stringList
     | numberRanges
     | properties
+    | byteSizeArg
+    | timeDurationArg
   )*?
   ;
 
@@ -140,7 +142,12 @@ numberRange
  ;
 
 value
- : String | Number | Column | Bool
+ : String
+ | Number
+ | Column
+ | Bool
+ | BYTE_SIZE
+ | TIME_DURATION
  ;
 
 ecommand
@@ -165,6 +172,14 @@ number
 
 bool
  : Bool
+ ;
+
+byteSizeArg
+ : BYTE_SIZE
+ ;
+
+timeDurationArg
+ : TIME_DURATION
  ;
 
 condition
@@ -195,9 +210,8 @@ identifierList
  : Identifier (',' Identifier)*
  ;
 
-
 /*
- * Following are the Lexer Rules used for tokenizing the recipe.
+ * Lexer Rules
  */
 OBrace   : '{';
 CBrace   : '}';
@@ -215,38 +229,37 @@ StartsWith : '=^';
 NotStartsWith : '!^';
 EndsWith : '=$';
 NotEndsWith : '!$';
-PlusEqual : '+=';
-SubEqual : '-=';
-MulEqual : '*=';
-DivEqual : '/=';
-PerEqual : '%=';
-AndEqual : '&=';
-OrEqual  : '|=';
-XOREqual : '^=';
-Pow      : '^';
-External : '!';
-GT       : '>';
-LT       : '<';
-Add      : '+';
-Subtract : '-';
-Multiply : '*';
-Divide   : '/';
-Modulus  : '%';
-OBracket : '[';
-CBracket : ']';
-OParen   : '(';
-CParen   : ')';
-Assign   : '=';
-Comma    : ',';
-QMark    : '?';
-Colon    : ':';
-Dot      : '.';
-At       : '@';
-Pipe     : '|';
-BackSlash: '\\';
-Dollar   : '$';
+PlusEqual : '+='; 
+SubEqual : '-='; 
+MulEqual : '*='; 
+DivEqual : '/='; 
+PerEqual : '%='; 
+AndEqual : '&='; 
+OrEqual  : '|='; 
+XOREqual : '^='; 
+Pow      : '^'; 
+External : '!'; 
+GT       : '>'; 
+LT       : '<'; 
+Add      : '+'; 
+Subtract : '-'; 
+Multiply : '*'; 
+Divide   : '/'; 
+Modulus  : '%'; 
+OBracket : '['; 
+CBracket : ']'; 
+OParen   : '('; 
+CParen   : ')'; 
+Assign   : '='; 
+Comma    : ','; 
+QMark    : '?'; 
+Colon    : ':'; 
+Dot      : '.'; 
+At       : '@'; 
+Pipe     : '|'; 
+BackSlash: '\\'; 
+Dollar   : '$'; 
 Tilde    : '~';
-
 
 Bool
  : 'true'
@@ -255,6 +268,22 @@ Bool
 
 Number
  : Int ('.' Digit*)?
+ ;
+
+BYTE_SIZE
+ : Number BYTE_UNIT
+ ;
+
+TIME_DURATION
+ : Number TIME_UNIT
+ ;
+
+fragment BYTE_UNIT
+ : [kK][bB] | [mM][bB] | [gG][bB] | [tT][bB] | [bB]
+ ;
+
+fragment TIME_UNIT
+ : [mM][sS] | [sS] | [mM] | [hH] | [nN][sS]
  ;
 
 Identifier
@@ -270,7 +299,7 @@ Column
  ;
 
 String
- : '\'' ( EscapeSequence | ~('\'') )* '\''
+ : '\'' ( EscapeSequence | ~('\'' ) )* '\''
  | '"'  ( EscapeSequence | ~('"') )* '"'
  ;
 
@@ -293,7 +322,7 @@ UnicodeEscape
    ;
 
 fragment
-   HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
+HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 Comment
  : ('//' ~[\r\n]* | '/*' .*? '*/' | '--' ~[\r\n]* ) -> skip
