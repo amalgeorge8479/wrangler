@@ -17,7 +17,7 @@ public class TimeDuration extends Token {
   private final long nanoseconds;
 
   public TimeDuration(String value) {
-    super(Type.TIME_DURATION, value);
+    super(TokenType.TIME_DURATION, value);
     value = value.trim().toLowerCase();
     String numberPart = value.replaceAll("[a-zA-Z]", "");
     String unitPart = value.replaceAll("[0-9.]", "");
