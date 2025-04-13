@@ -17,7 +17,7 @@ public class ByteSize extends Token {
   private final long bytes;
 
   public ByteSize(String value) {
-    super(Type.BYTE_SIZE, value);
+    super(TokenType.BYTE_SIZE, value);
     value = value.trim().toLowerCase();
     String numberPart = value.replaceAll("[a-zA-Z]", "");
     String unitPart = value.replaceAll("[0-9.]", "");
